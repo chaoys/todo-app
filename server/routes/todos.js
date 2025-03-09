@@ -45,7 +45,7 @@ router.post('/:id', authenticateSession, async (req, res) => {
       return res.redirect('/todos');
     }
 
-    await updateTodo(id, { title, description });
+    await updateTodo(id, { title, description }, req.session.user.id);
     res.redirect('/todos');
   } catch (error) {
     console.error('更新待办事项错误:', error);
@@ -64,8 +64,22 @@ router.post('/:id/toggle', authenticateSession, async (req, res) => {
       return res.redirect('/todos');
     }
 
-    const newStatus = todo.status === 'done' ? 'todo' : 'done';
-    await updateTodo(id, { status: newStatus });
+    let newStatus;
+    switch (todo.status) {
+      case 'todo':
+        newStatus = 'doing';
+        break;
+      case 'doing':
+        newStatus = 'done';
+        break;
+      case 'done':
+        newStatus = 'todo';
+        break;
+      default:
+        newStatus = 'todo';
+    }
+
+    await updateTodo(id, { status: newStatus }, req.session.user.id);
     res.redirect('/todos');
   } catch (error) {
     console.error('更新待办事项状态错误:', error);

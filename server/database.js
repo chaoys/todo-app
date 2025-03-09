@@ -68,10 +68,8 @@ async function createUserTodoTable(userId) {
         title TEXT NOT NULL,
         description TEXT,
         status TEXT CHECK(status IN ('todo', 'doing', 'done')) DEFAULT 'todo',
-        is_public BOOLEAN DEFAULT FALSE,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-        local_id TEXT,
         last_synced_at DATETIME
       )
     `, function(err) {
@@ -131,9 +129,7 @@ async function createTodo(todoData) {
   const {
     title,
     description,
-    assigned_to,
-    is_public,
-    local_id
+    assigned_to
   } = todoData;
 
   return new Promise((resolve, reject) => {
@@ -151,10 +147,10 @@ async function createTodo(todoData) {
           return new Promise((resolve, reject) => {
             db.run(
               `INSERT INTO todos_${userId} (
-                title, description, is_public, local_id
-              ) VALUES (?, ?, ?, ?)
+                title, description, status
+              ) VALUES (?, ?, 'todo')
               `,
-              [title, description, is_public, local_id],
+              [title, description],
               function(err) {
                 if (err) reject(err);
                 else resolve(this.lastID);
