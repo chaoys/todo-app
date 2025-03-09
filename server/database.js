@@ -22,23 +22,6 @@ async function initDatabase() {
           });
         });
 
-        // 创建待办事项分配表
-        await new Promise((resolve, reject) => {
-          db.run(`
-            CREATE TABLE IF NOT EXISTS todo_assignments (
-              id INTEGER PRIMARY KEY AUTOINCREMENT,
-              todo_id INTEGER NOT NULL,
-              user_id INTEGER NOT NULL,
-              created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-              FOREIGN KEY (user_id) REFERENCES users (id),
-              UNIQUE(todo_id, user_id)
-            )
-          `, (err) => {
-            if (err) reject(err);
-            else resolve();
-          });
-        });
-
         // 为现有用户创建todo表
         const users = await new Promise((resolve, reject) => {
           db.all('SELECT id FROM users', [], (err, rows) => {

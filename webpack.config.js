@@ -8,8 +8,6 @@ module.exports = {
   mode: process.env.NODE_ENV || 'development',
   entry: {
     userSelection: './server/public/js/userSelection.js',
-    db: './server/public/js/db.js',
-    'service-worker': './server/public/service-worker.js',
     styles: './server/public/css/styles.css',
     vendor: './server/public/css/vendor.css',
     bootstrap: './node_modules/bootstrap/dist/js/bootstrap.bundle.min.js',
