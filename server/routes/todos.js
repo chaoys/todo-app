@@ -92,6 +92,19 @@ router.post('/:id/toggle', authenticateSession, async (req, res) => {
   }
 });
 
+// 获取待办事项列表（JSON格式）
+router.get('/list', authenticateSession, async (req, res) => {
+  try {
+    const todos = await getTodosByUser(req.session.user.id);
+    console.log(todos);
+    res.setHeader('Content-Type', 'application/json');
+    res.json(todos);
+  } catch (error) {
+    console.error('获取待办事项列表错误:', error);
+    res.status(500).json({ error: '获取待办事项失败' });
+  }
+});
+
 // 删除待办事项
 router.post('/:id/delete', authenticateSession, async (req, res) => {
   try {
@@ -110,7 +123,5 @@ router.post('/:id/delete', authenticateSession, async (req, res) => {
     res.redirect('/todos');
   }
 });
-
-
 
 module.exports = router;
