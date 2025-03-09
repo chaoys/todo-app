@@ -96,7 +96,6 @@ router.post('/:id/toggle', authenticateSession, async (req, res) => {
 router.get('/list', authenticateSession, async (req, res) => {
   try {
     const todos = await getTodosByUser(req.session.user.id);
-    console.log(todos);
     res.setHeader('Content-Type', 'application/json');
     res.json(todos);
   } catch (error) {
