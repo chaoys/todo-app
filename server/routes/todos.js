@@ -7,8 +7,11 @@ const router = express.Router();
 // 获取用户的所有待办事项
 router.get('/', authenticateSession, async (req, res) => {
   try {
-    const todos = await getTodosByUser(req.session.user.id);
-    res.render('todos', { user: req.session.user, todos });
+    const [todos, users] = await Promise.all([
+      getTodosByUser(req.session.user.id),
+      getAllUsers()
+    ]);
+    res.render('todos', { user: req.session.user, todos, users });
   } catch (error) {
     console.error('获取待办事项错误:', error);
     res.render('todos', { user: req.session.user, todos: [], error: '获取待办事项失败' });
@@ -18,18 +21,20 @@ router.get('/', authenticateSession, async (req, res) => {
 // 创建新的待办事项
 router.post('/', authenticateSession, async (req, res) => {
   try {
-    const { title, description, assigned_to } = req.body;
+    const { title, description, assigned_to, deadline } = req.body;
 
     await createTodo({
       title,
       description,
-      assigned_to: assigned_to ? [...assigned_to, req.session.user.id] : [req.session.user.id]
+      assigned_to: assigned_to ? [...assigned_to, req.session.user.id] : [req.session.user.id],
+      deadline
     });
 
     res.redirect('/todos');
   } catch (error) {
     console.error('创建待办事项错误:', error);
-    res.render('todos', { user: req.session.user, todos: [], error: '创建待办事项失败' });
+    const users = await getAllUsers();
+    res.render('todos', { user: req.session.user, todos: [], users, error: '创建待办事项失败' });
   }
 });
 
@@ -37,7 +42,7 @@ router.post('/', authenticateSession, async (req, res) => {
 router.post('/:id', authenticateSession, async (req, res) => {
   try {
     const { id } = req.params;
-    const { title, description } = req.body;
+    const { title, description, deadline } = req.body;
     const todos = await getTodosByUser(req.session.user.id);
     const todo = todos.find(t => t.id === parseInt(id));
 
@@ -45,7 +50,7 @@ router.post('/:id', authenticateSession, async (req, res) => {
       return res.redirect('/todos');
     }
 
-    await updateTodo(id, { title, description }, req.session.user.id);
+    await updateTodo(id, { title, description, deadline }, req.session.user.id);
     res.redirect('/todos');
   } catch (error) {
     console.error('更新待办事项错误:', error);

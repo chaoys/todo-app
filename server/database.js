@@ -68,6 +68,7 @@ async function createUserTodoTable(userId) {
         title TEXT NOT NULL,
         description TEXT,
         status TEXT CHECK(status IN ('todo', 'doing', 'done')) DEFAULT 'todo',
+        deadline DATE DEFAULT CURRENT_DATE,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         last_synced_at DATETIME
@@ -129,7 +130,8 @@ async function createTodo(todoData) {
   const {
     title,
     description,
-    assigned_to
+    assigned_to,
+    deadline
   } = todoData;
 
   return new Promise((resolve, reject) => {
@@ -147,10 +149,10 @@ async function createTodo(todoData) {
           return new Promise((resolve, reject) => {
             db.run(
               `INSERT INTO todos_${userId} (
-                title, description, status
-              ) VALUES (?, ?, 'todo')
+                title, description, status, deadline
+              ) VALUES (?, ?, 'todo', ?)
               `,
-              [title, description],
+              [title, description, deadline === undefined || deadline === '' ? new Date().toISOString().split('T')[0] : deadline],
               function(err) {
                 if (err) reject(err);
                 else resolve(this.lastID);
@@ -190,7 +192,7 @@ async function updateTodo(id, todoData, userId) {
 
   const values = [...Object.entries(todoData)
     .filter(([key]) => key !== 'id')
-    .map(([, value]) => value), id];
+    .map(([, value]) => value === '' ? null : value), id];
 
   return new Promise((resolve, reject) => {
     db.run(

@@ -35,6 +35,10 @@
         <textarea class="form-control" name="description" placeholder="描述（可选）" rows="2"></textarea>
       </div>
       <div class="mb-3">
+        <label class="form-label">截止日期</label>
+        <input type="date" class="form-control" name="deadline" value="<%= new Date().toISOString().split('T')[0] %>" required>
+      </div>
+      <div class="mb-3">
         <button type="button" class="btn btn-outline-primary w-100" data-bs-toggle="modal" data-bs-target="#assignUsersModal">
           选择分配用户
         </button>
@@ -82,7 +86,10 @@
             <div class="card">
               <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center">
-                  <span class="todo-title"><%= todo.title %></span>
+                  <div>
+                    <span class="todo-title"><%= todo.title %></span>
+                    <div class="text-muted small">截止日期：<%= todo.deadline %></div>
+                  </div>
                   <div class="btn-group">
                     <form action="/todos/<%= todo.id %>/toggle" method="POST" class="d-inline">
                       <button type="submit" class="btn btn-sm btn-outline-warning" title="移至进行中">
@@ -190,6 +197,10 @@
                 <div class="mb-3">
                   <label class="form-label">描述</label>
                   <textarea class="form-control" name="description" rows="3"><%= todo.description %></textarea>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">截止日期</label>
+                  <input type="date" class="form-control" name="deadline" value="<%= todo.deadline %>" required>
                 </div>
               </div>
               <div class="modal-footer">
