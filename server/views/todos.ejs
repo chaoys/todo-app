@@ -28,23 +28,26 @@
     </div>
 
     <form action="/todos" method="POST" class="mb-4">
-      <div class="mb-3">
-        <input type="text" class="form-control" name="title" placeholder="添加新的待办事项..." required>
+      <div class="row g-3 align-items-center">
+        <div class="col-4">
+          <input type="text" class="form-control form-control-sm" name="title" placeholder="添加新的待办事项..." required>
+        </div>
+        <div class="col-3">
+          <input type="text" class="form-control form-control-sm" name="description" placeholder="描述（可选）">
+        </div>
+        <div class="col-2">
+          <input type="date" class="form-control form-control-sm" name="deadline" value="<%= new Date().toISOString().split('T')[0] %>" required>
+        </div>
+        <div class="col-2">
+          <button type="button" class="btn btn-outline-primary btn-sm w-100" data-bs-toggle="modal" data-bs-target="#assignUsersModal">
+            选择分配用户
+          </button>
+        </div>
+        <div class="col-1">
+          <button class="btn btn-primary btn-sm w-100" type="submit">添加</button>
+        </div>
       </div>
-      <div class="mb-3">
-        <textarea class="form-control" name="description" placeholder="描述（可选）" rows="2"></textarea>
-      </div>
-      <div class="mb-3">
-        <label class="form-label">截止日期</label>
-        <input type="date" class="form-control" name="deadline" value="<%= new Date().toISOString().split('T')[0] %>" required>
-      </div>
-      <div class="mb-3">
-        <button type="button" class="btn btn-outline-primary w-100" data-bs-toggle="modal" data-bs-target="#assignUsersModal">
-          选择分配用户
-        </button>
-        <div id="selectedUsers" class="mt-2"></div>
-      </div>
-      <button class="btn btn-primary w-100" type="submit">添加待办事项</button>
+      <div id="selectedUsers" class="mt-2 small"></div>
     </form>
 
     <!-- 用户选择模态框 -->
