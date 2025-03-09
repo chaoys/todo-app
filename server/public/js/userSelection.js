@@ -36,4 +36,16 @@ function confirmUserSelection() {
   // 关闭模态框
   const modalInstance = bootstrap.Modal.getInstance(modal);
   modalInstance.hide();
+  
+  // 确保模态框背景遮罩被正确移除
+  modal.addEventListener('hidden.bs.modal', function () {
+    const modalBackdrop = document.querySelector('.modal-backdrop');
+    if (modalBackdrop) {
+      modalBackdrop.remove();
+    }
+    document.body.classList.remove('modal-open');
+    document.body.style.overflow = '';
+    document.body.style.paddingRight = '';
+  });
 }
+window.confirmUserSelection = confirmUserSelection;

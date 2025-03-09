@@ -8,9 +8,14 @@ const STATIC_CACHE_URLS = [
   '/login',
   '/register',
   '/todos',
-  '/css/bootstrap.min.css',
-  '/js/bootstrap.bundle.min.js',
-  '/css/bootstrap-icons.css'
+  '/dist/styles.css',
+  '/dist/vendor.css',
+  '/dist/bootstrap.js',
+  '/dist/userSelection.js',
+  '/dist/db.js',
+  '/dist/service-worker.js',
+  '/dist/bootstrap-icons.woff',
+  '/dist/bootstrap-icons.woff2'
 ];
 
 // 安装 Service Worker

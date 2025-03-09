@@ -11,7 +11,26 @@ const PORT = process.env.PORT || 3000;
 // 中间件配置
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, 'public')));
+app.use('/dist', express.static(path.join(__dirname, 'dist'), {
+  setHeaders: (res, filePath) => {
+    if (filePath.endsWith('.css')) {
+      res.setHeader('Content-Type', 'text/css');
+    } else if (filePath.endsWith('.js') || filePath.match(/\.\w+\.js$/)) {
+      res.setHeader('Content-Type', 'application/javascript');
+      res.setHeader('X-Content-Type-Options', 'nosniff');
+    }
+  }
+}));
+/* app.use(express.static(path.join(__dirname, 'public'), {
+  setHeaders: (res, filePath) => {
+    if (filePath.endsWith('.css')) {
+      res.setHeader('Content-Type', 'text/css');
+    } else if (filePath.endsWith('.js') || filePath.match(/\.\w+\.js$/)) {
+      res.setHeader('Content-Type', 'application/javascript');
+      res.setHeader('X-Content-Type-Options', 'nosniff');
+    }
+  }
+})); */
 
 // 配置session中间件
 app.use(session({
